@@ -5,6 +5,7 @@ one chance to trade, so G2-G4 and G6 count clusters of them, not combinations.
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from statistics import median
@@ -54,11 +55,34 @@ def _day(ts):
     return datetime.fromtimestamp(ts, timezone.utc).date()
 
 
-def evaluate(episodes, window, poll_gaps, *, min_roi=0.005, fixed_cost=100.0, cap=None, latency=2.0,
-             require_verified_rules=False):
+def paper_gate(attempts):
+    """Paper-trading gate: share of arbs filled in full, and what the incomplete ones cost against the rest."""
+    go_if = '>= 90% filled, incomplete loss < 25% of gross'
+    if not attempts:
+        return Gate('G5 simulated fills', 'complete fills / attempts', '-', go_if, 'N/A',
+                    'run arbscan paper first' if attempts is None else 'no arbs to trade')
+    full = [a for a in attempts if a.status == 'filled']
+    rate = len(full) / len(attempts)
+    gross = sum(a.pnl for a in full)
+    loss = -sum(a.pnl for a in attempts if a.status != 'filled')
+    ratio = loss / gross if gross > 0 else math.inf if loss > 0 else 0.0
+    no_quote = sum(r == 'no_quote' for a in attempts for r in a.reasons)
+    left_open = sum(a.open for a in attempts)
+    notes = [f'{len(attempts)} attempts']
+    if no_quote:
+        notes.append(f'{no_quote} legs saw no quote within the timeout: poll faster or stream')
+    if left_open:
+        notes.append(f'{left_open} left open, booked at their worst outcome')
+    shown = 'no gross profit' if ratio == math.inf else f'{ratio:.0%} of gross'
+    return Gate('G5 simulated fills', 'complete fills / attempts; incomplete loss', f'{rate:.0%}; {shown}', go_if,
+                'GO' if rate >= 0.9 and ratio < 0.25 else 'NO-GO' if rate < 0.75 else 'GREY', '; '.join(notes))
+
+
+def evaluate(episodes, window, poll_gaps, *, attempts=None, min_roi=0.005, fixed_cost=100.0, cap=None,
+             latency=2.0, require_verified_rules=False):
     g1 = Gate('G1 legal', 'written sign-off for every venue in the operator\'s country', '-',
               'all venues in the strategy allowed', 'MANUAL', 'not computable; one missing venue is a stop')
-    g5 = Gate('G5 simulated fills', 'paper-trading fill rate', '-', '>= 90%', 'N/A', 'simulator not built yet')
+    g5 = paper_gate(attempts)
     if window is None:
         def na(name):
             return Gate(name, '-', '-', '-', 'N/A', 'no snapshots')
