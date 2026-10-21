@@ -90,7 +90,7 @@ One JSON line per snapshot of one venue's book for one market. Live collectors w
 
 - **Lifetime (G4)** is reported as "certain / at most": first to last sighting, and first sighting to the first fresh look without it. If most arbs are gone by the next poll, the gate says so instead of passing; poll faster or stream.
 - **Depth (G3)** is the largest bankroll every leg can fill at the quoted top-of-book price. Feeds without sizes give no depth, and those arbs count as zero in G6.
-- **Frequency (G2)** and **economics (G6)** count overlapping arbs on one market as one chance, skip palp-flagged ones, and need at least a day of data.
+- **Frequency (G2)** and **economics (G6)** count overlapping arbs on one market as one chance, skip palp-flagged ones, and need at least a day of data. G2's bar is the larger of 3 a day and what G6 needs at the measured depth and return, 2 × fixed cost ÷ (30 × bankroll × ROI); `--fixed-cost` defaults to the report's $160 a month.
 - **Simulated fills (G5)** come from the last `arbscan paper` run on the same store; `replay --reset` clears them.
 
 ## Not built yet, and why

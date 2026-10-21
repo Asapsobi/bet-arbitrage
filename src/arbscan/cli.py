@@ -225,7 +225,7 @@ def main(argv=None):
     g = sub.add_parser('gates', help='score G1-G6 on the store')
     g.add_argument('--db', default='scan.db')
     g.add_argument('--min-roi', type=float, default=0.005, help='net return an arb needs to count for G2')
-    g.add_argument('--fixed-cost', type=float, default=100.0, help='monthly data + server cost, USD')
+    g.add_argument('--fixed-cost', type=float, default=160.0, help='monthly data + server cost, USD (docs/08: about 160)')
     g.add_argument('--cap', type=float, help='planned max bankroll per arb, USD')
     g.add_argument('--latency', type=float, default=2.0, help='your detect-to-fill time, seconds')
     g.add_argument('--verified-only', action='store_true', help='count only arbs whose settlement rules are checked')

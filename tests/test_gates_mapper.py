@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 
+import pytest
+
 from arbscan import gates
 from arbscan.lifecycle import Episode
 from arbscan.mapper import Mapper, VenueEvent, event_id
@@ -27,7 +29,8 @@ def three_days():
 
 def test_gates_on_three_days():
     g = by_gate(gates.evaluate(three_days(), (DAY0, DAY0 + 3 * 86400 - 1), [1.0] * 10))
-    assert (g['G2'].value, g['G2'].verdict) == ('3', 'GO')
+    # 3 a day clears the floor but not what G6 needs: 2 x $160 / (30 x $300 x 0.6%) = 5.9 a day
+    assert (g['G2'].value, g['G2'].go_if, g['G2'].verdict) == ('3', '>= 5.9/day', 'GREY')
     assert (g['G3'].value, g['G3'].verdict) == ('$300', 'GO')
     assert g['G4'].verdict == 'GO' and g['G4'].go_if == '>= 2 s'      # 1 s polling counts as streaming
     assert g['G6'].verdict == 'GREY'                                   # 10 x 0.6% x $300 over 3 days ~ $180/month
@@ -57,3 +60,8 @@ def test_mapper():
     milan = VenueEvent('smarkets', '2', 'AC Milan', 'Roma', DAY0)
     assert m.match(milan, [VenueEvent('polymarket', 'e', 'Inter', 'Roma', DAY0)]).status != 'auto'
     assert event_id(ref) == '2026-11-01:bayern-munich-v-arsenal'
+
+
+def test_g6_floor_matches_report():
+    assert gates.g6_needs(160, 200, 0.005) == pytest.approx(10.67, abs=0.01)     # docs/08: about 10.7 a day
+    assert gates.g6_needs(160, 500, 0.005) == pytest.approx(4.27, abs=0.01)

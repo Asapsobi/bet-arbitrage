@@ -78,7 +78,12 @@ def paper_gate(attempts):
                 'GO' if rate >= 0.9 and ratio < 0.25 else 'NO-GO' if rate < 0.75 else 'GREY', '; '.join(notes))
 
 
-def evaluate(episodes, window, poll_gaps, *, attempts=None, min_roi=0.005, fixed_cost=100.0, cap=None,
+def g6_needs(fixed_cost, bankroll, roi):
+    """Arbs a day for G6 (twice the fixed cost) at this bankroll per arb and net ROI: 2C / (30 B r)."""
+    return 2 * fixed_cost / (30 * bankroll * roi)
+
+
+def evaluate(episodes, window, poll_gaps, *, attempts=None, min_roi=0.005, fixed_cost=160.0, cap=None,
              latency=2.0, require_verified_rules=False):
     g1 = Gate('G1 legal', 'written sign-off for every venue in the operator\'s country', '-',
               'all venues in the strategy allowed', 'MANUAL', 'not computable; one missing venue is a stop')
@@ -100,10 +105,18 @@ def evaluate(episodes, window, poll_gaps, *, attempts=None, min_roi=0.005, fixed
     for c in cl:
         per_day[_day(c.start)] += 1
     freq = median(per_day.values())
-    g2 = Gate('G2 frequency', f'arbs/day with net ROI >= {min_roi:.2%}, median', f'{freq:g}', '>= 3/day',
-              'N/A' if thin else 'GO' if freq >= 3 else 'NO-GO' if freq < 1 else 'GREY', short)
-
     depths = [c.depth for c in cl if c.depth is not None]
+    # G2 must be enough for G6 at the measured depth and return, not just 3 a day (docs/08, gates).
+    need, why = 3.0, 'G6 floor unknown without depth'
+    if depths:
+        b = median(d if cap is None else min(d, cap) for d in depths)
+        r = median(c.roi for c in cl if c.depth is not None)
+        need = max(3.0, g6_needs(fixed_cost, b, r))
+        why = f'G6 needs {g6_needs(fixed_cost, b, r):.1f}/day at ${b:,.0f} and {r:.2%}'
+    g2 = Gate('G2 frequency', f'arbs/day with net ROI >= {min_roi:.2%}, median', f'{freq:g}', f'>= {need:.1f}/day',
+              'N/A' if thin else 'GO' if freq >= need else 'NO-GO' if freq < 1 else 'GREY',
+              '; '.join(n for n in (short, why if cl else '') if n))
+
     if depths:
         d = median(depths)
         g3 = Gate('G3 depth', 'bankroll fillable at quoted prices, median', f'${d:,.0f}', '>= $200',

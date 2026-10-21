@@ -6,7 +6,7 @@ _Measured 2026-10-21._
 
 ## Answer
 
-Between Pinnacle and Betfair Exchange, the two venues in this data that don't limit winners, arbs of 0.5% or more after 5% commission came up **48 times in the whole 2024/25 season**: about 0.15 a day across all 22 leagues. Gate G2 asks for 3 a day. Adding every soft bookmaker raises it to 1.24 a day, still short, and those books have no betting API and limit winners.
+Between Pinnacle and Betfair Exchange, the two venues in this data that don't limit winners, arbs of 0.5% or more after 5% commission came up **48 times in the whole 2024/25 season**: about 0.15 a day across all 22 leagues. Gate G2 asks for at least 3 a day, and about 11 once G6 is counted ($200 per arb at 0.5% net, $160 a month fixed cost). Adding every soft bookmaker raises it to 1.24 a day, still short, and those books have no betting API and limit winners.
 
 ## 2024/25, 22 leagues, 7,680 matches
 

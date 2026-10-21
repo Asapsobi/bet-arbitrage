@@ -18,7 +18,7 @@ First test: two-way markets (O/U, Asian handicap, draw no bet, BTTS, back/lay) i
 | Gate | Go if |
 | --- | --- |
 | G1 legal | Written sign-off that every venue in the strategy is allowed where you operate |
-| G2 frequency | Median ≥ 3 net arbs a day at ≥ 0.5% net, on executable venues |
+| G2 frequency | Median ≥ 3 net arbs a day at ≥ 0.5% net on executable venues, and enough for G6: 2 × fixed cost ÷ (30 × bankroll per arb × net ROI), about 11 a day at $200 and 0.5% |
 | G3 depth | Median ≥ $200 fillable at the quoted price on every leg |
 | G4 lifetime | Median ≥ 10 s with polling, or ≥ 2 s with streaming |
 | G5 simulated fills | ≥ 90% filled, and losses on incomplete legs < 25% of gross profit |
