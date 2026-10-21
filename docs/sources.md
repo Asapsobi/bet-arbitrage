@@ -2,7 +2,7 @@
 
 Research as of 2026-10-21.
 
-- [Betfair: How do I get started (app keys, £299 live key)](https://support.developer.betfair.com/hc/en-us/articles/115003864651-How-do-I-get-started)
+- [Betfair: How do I get started (app keys, £499 live key)](https://support.developer.betfair.com/hc/en-us/articles/115003864651-How-do-I-get-started)
 - [Betfair API pricing and commission model](https://raw.githubusercontent.com/api-evangelist/betfair/refs/heads/main/plans/betfair-plans-pricing.yml)
 - [Betting exchange APIs 2026 (Betfair, Smarkets, Matchbook, Betdaq)](https://sportsapis.dev/betting-exchange-api)
 - [Cloudbet API docs (Feed, Trading, Account)](https://pkg.go.dev/github.com/cloudbet/docs)

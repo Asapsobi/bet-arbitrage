@@ -29,6 +29,9 @@ Crypto-funded venues: **Cloudbet, Stake, Pinnacle, BetInAsia, Polymarket**. Betf
 | 5 | [System architecture](docs/05-architecture.md) | Pipeline from feeds to execution router, hedge and treasury |
 | 6 | [Risks and gotchas](docs/06-risks.md) | Limits, leg risk, voids, fees, counterparty, legal |
 | 7 | [Getting started](docs/07-getting-started.md) | Phased plan and open questions |
+| 8 | [Research report (Persian)](docs/08-research-report-fa.md) | Measured arb frequency in 211k historical matches, a live net-of-fee check, venue/API database, ranking, capital, 30-day plan and go/no-go gates |
 | — | [Sources](docs/sources.md) | Pages the research is based on |
+
+Analysis code behind the report's measured figures is in [`analysis/`](analysis/): `arb_frequency.py` (historical frequency) and `live_example.py` (Bayern–Arsenal net-of-fee check).
 
 > Pricing, API availability and venue policies change often. Re-check each venue's own docs before building on it.
