@@ -8,13 +8,16 @@ _As of 2026-10-21._
 
 The buildable stack today is an aggregated odds feed for detection, plus three or four venues you can actually bet on by API. Soft bookmakers create the arbs but have no APIs and limit winners fast, so the product is built around venues that tolerate winners.
 
+Price gaps that look like arbs are common; arbs that survive fees on those venues are rare and thin. In the [report](docs/08-research-report-fa.md)'s live Smarkets–Polymarket check, the best one went from +1.14% to −0.61% after fees. So the plan is a 30-day read-only scanner first, and real money only once all six go/no-go gates pass, starting with the legal one ([getting started](docs/07-getting-started.md)).
+
 | Layer | Start with | Why |
 | --- | --- | --- |
-| Odds data | OddsPapi (350+ books, free tier) + a Pinnacle feed (pinnapi) | Covers sharps, crypto books and exchanges in one schema |
-| Exchange leg | Betfair Exchange API (or Smarkets / Matchbook) | Real API, lay side, does not limit winners |
-| Crypto book leg | Cloudbet Trading API | Only major crypto sportsbook with a public betting API |
-| Sharp / Asian books | BetInAsia broker (BLACK, PS3838, OrbitX) | One crypto-funded wallet into Pinnacle and Asian books |
+| Odds data | The Odds API | Cheapest feed covering Pinnacle, Betfair Exchange, Matchbook, Smarkets, Polymarket and Kalshi in one schema; Pinnacle doubles as the fair-price reference |
+| Depth and timing | The exchanges' own APIs: Betfair Stream, Smarkets v3, Polymarket CLOB | Aggregated feeds don't show order-book depth |
+| Exchange leg | Betfair, Smarkets, Matchbook | Real API, lay side, do not limit winners |
 | Prediction market | Polymarket CLOB API | Soccer markets, USDC on Polygon, full order book |
+| Sharp / Asian books | Later: BetInAsia broker (BLACK, PS3838, OrbitX) | Ranked 2nd in the report; only once API access and legality are confirmed |
+| Crypto book leg | Later: Cloudbet Trading API | Ranked 3rd; only once its football coverage and your country's access are confirmed |
 
 Crypto-funded venues: **Cloudbet, Stake, Pinnacle, BetInAsia, Polymarket**. Betfair and the UK exchanges are fiat-only.
 
@@ -28,7 +31,7 @@ Crypto-funded venues: **Cloudbet, Stake, Pinnacle, BetInAsia, Polymarket**. Betf
 | 4 | [Crypto payment support](docs/04-crypto-payments.md) | Coins, fees and gotchas per venue |
 | 5 | [System architecture](docs/05-architecture.md) | Pipeline from feeds to execution router, hedge and treasury |
 | 6 | [Risks and gotchas](docs/06-risks.md) | Limits, leg risk, voids, fees, counterparty, legal |
-| 7 | [Getting started](docs/07-getting-started.md) | Phased plan and open questions |
+| 7 | [Getting started](docs/07-getting-started.md) | 30-day read-only plan, go/no-go gates, what happens after a go, open questions |
 | 8 | [Research report (Persian)](docs/08-research-report-fa.md) | Measured arb frequency in 211k historical matches, a live net-of-fee check, venue/API database, ranking, capital, 30-day plan and go/no-go gates |
 | 9 | [Scanner](docs/09-scanner.md) | Read-only `arbscan` package: net-of-fee engine, arb lifetime and depth log, gate scoring |
 | — | [Sources](docs/sources.md) | Pages the research is based on |
