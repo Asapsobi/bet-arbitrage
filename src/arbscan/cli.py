@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import argparse
+import csv
+import re
 import sys
 from collections import Counter
 from datetime import datetime, timezone
 
-from . import gates, paper, replay
+from . import footballdata, gates, paper, replay
 from .engine import Limits, scan
 from .store import Store
 
@@ -100,6 +102,51 @@ def cmd_paper(a):
                ['market', 'legs', 'at', 'bankroll', 'roi', 'status', 'filled', 'pnl', 'open'])
 
 
+def _seasons(s):
+    """'2019-2025' -> ['1920', ..., '2526'] (season start years); '1920,2526' as given."""
+    m = re.fullmatch(r'(\d{4})-(\d{4})', s)
+    if m:
+        return [f'{y % 100:02d}{(y + 1) % 100:02d}' for y in range(int(m[1]), int(m[2]) + 1)]
+    return [x for x in s.split(',') if x]
+
+
+def _pool(s):
+    name, _, members = s.partition('=')
+    return name, (tuple(v for v in members.split(',') if v) or None) if members else None
+
+
+def cmd_fetch(a):
+    divs = a.divs.split(',') + (footballdata.EXTRA if a.extra else [])
+    done, missing = footballdata.fetch(divs, _seasons(a.seasons), a.dir, a.refresh)
+    print(f'{len(done)} files in {a.dir}' + (f'; {len(missing)} not available:' if missing else ''))
+    for m in missing:
+        print(f'  {m}')
+
+
+def cmd_history(a):
+    pools = dict(a.pool) if a.pool else footballdata.POOLS
+    res = [r for r in footballdata.scan_files(a.paths, pools, a.commission)
+           if r.market in a.market.split(',') and r.snapshot in a.snapshot.split(',')
+           and (a.since is None or r.date >= a.since) and (a.until is None or r.date <= a.until)]
+    if not res:
+        sys.exit('no matches with at least two complete quotes in those files')
+    if a.csv:
+        with open(a.csv, 'w', newline='') as f:
+            w = csv.writer(f)
+            w.writerow([*footballdata.Result.__dataclass_fields__, 'uses_exchange'])
+            w.writerows([*(getattr(r, k) for k in footballdata.Result.__dataclass_fields__), r.uses_exchange]
+                        for r in res)
+    by = tuple(a.by.split(','))
+    pct = lambda x: '-' if x is None else f'{x:.1%}'
+    rows = [[*s.group, s.matches, pct(s.arb), pct(s.roi_min), pct(s.roi_1pct), pct(s.median_roi), pct(s.palp),
+             pct(s.via_exchange)] for s in footballdata.summarize(res, by, a.min_roi, a.palp)]
+    print(f'{len({(r.div, r.date, r.home) for r in res}):,} matches; Betfair Exchange commission {a.commission:.0%}; '
+          f'arbs above {a.palp:.0%} counted as palp and left out\n')
+    _table(rows, [*by, 'matches', 'net arb', f'>= {a.min_roi:.1%}', '>= 1%', 'median arb', 'palp', 'via exchange'])
+    if a.csv:
+        print(f'\nper-match results written to {a.csv}')
+
+
 def cmd_gates(a):
     store = Store(a.db)
     res = gates.evaluate(store.episodes(), store.window(), store.poll_gaps(), attempts=store.attempts(),
@@ -150,6 +197,30 @@ def main(argv=None):
     pp.add_argument('--min-roi', type=float, default=0.005, help='trade arbs at or above this net return')
     limit_args(pp, min_roi=False)
     pp.set_defaults(func=cmd_paper)
+
+    fe = sub.add_parser('fetch', help='download football-data.co.uk odds files')
+    fe.add_argument('--divs', default=','.join(footballdata.MAIN), help='division codes, e.g. E0,D1')
+    fe.add_argument('--seasons', default='2019-2025', help='start years 2019-2025, or codes 1920,2526')
+    fe.add_argument('--extra', action='store_true', help='also the extra leagues (ARG, BRA, USA, ...)')
+    fe.add_argument('--dir', default='data/football-data')
+    fe.add_argument('--refresh', action='store_true', help='download again even if the file exists')
+    fe.set_defaults(func=cmd_fetch)
+
+    h = sub.add_parser('history', help='net-of-fee arb frequency in football-data.co.uk files')
+    h.add_argument('paths', nargs='+', help='CSV files or folders')
+    h.add_argument('--by', default='market,snapshot,pool',
+                   help='group by any of: tier, div, season, month, market, snapshot, pool')
+    h.add_argument('--since', help='first match date, YYYY-MM-DD')
+    h.add_argument('--until', help='last match date, YYYY-MM-DD')
+    h.add_argument('--pool', type=_pool, action='append',
+                   help='venue pool, e.g. tolerant=pinnacle,betfair_exchange or all (repeatable)')
+    h.add_argument('--market', default='1x2,ou,ah')
+    h.add_argument('--snapshot', default='pre,close')
+    h.add_argument('--commission', type=float, default=0.05, help='Betfair Exchange commission')
+    h.add_argument('--min-roi', type=float, default=0.005)
+    h.add_argument('--palp', type=float, default=0.03, help='leave out arbs above this as probable error prices')
+    h.add_argument('--csv', help='write per-match results here')
+    h.set_defaults(func=cmd_history)
 
     g = sub.add_parser('gates', help='score G1-G6 on the store')
     g.add_argument('--db', default='scan.db')

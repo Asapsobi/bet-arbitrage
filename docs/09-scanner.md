@@ -17,6 +17,7 @@ _As of 2026-10-21._
 | `store` | SQLite: every snapshot, episode and paper trade | all |
 | `gates` | G2–G6 from the store; G1 is manual | G1–G6 |
 | `mapper` | Same match across venues; partial names and swapped home/away go to review | — |
+| `footballdata` | football-data.co.uk odds files: download, then net-of-fee arb frequency per match by venue pool | G2 (history) |
 
 ## Run it
 
@@ -30,6 +31,28 @@ uv run arbscan gates --db scan.db
 ```
 
 `scan` shows every combination at one moment, near misses included; on the report's Bayern–Arsenal snapshot it reproduces the net table (B −0.61%, B2 −1.03%, A −1.30%, C −1.51%). `replay` runs a recording through the scanner and writes episodes; `paper` trades them on paper; `gates` scores the result. `synthetic_ou_demo.jsonl` is made-up data for the demo, not market quotes.
+
+## Historical odds (football-data.co.uk)
+
+football-data.co.uk is reachable from Iran, so this runs on real odds today. Results are in [docs/10](10-historical-check.md).
+
+```bash
+uv run arbscan fetch --seasons 2019-2025            # 22 main divisions into data/football-data (git-ignored)
+uv run arbscan history data/football-data --since 2024-07-01 --until 2025-06-30
+uv run arbscan history data/football-data --by month,snapshot --pool 'pe=pinnacle,betfair_exchange'
+```
+
+Each row prices a match at two moments: `pre` (collected Friday or Tuesday afternoon) and `close` (kickoff), for 1X2, O/U 2.5 and the row's Asian handicap line. Quarter lines are skipped. Betfair Exchange prices pay `--commission` (default 5%); legs sharing the exchange market pay it once, on the net result. Every quote is a back on one outcome, so the best net price per outcome is the best combination.
+
+| Pool | Venues | Use |
+| --- | --- | --- |
+| `all` | Every bookmaker in the row | Upper bound; its make-up changes by league and season |
+| `bet365+pinnacle+exchange` | Fixed three | Fair comparison across leagues and seasons |
+| `pinnacle+exchange` | Fixed two that don't limit winners | Closest to the report's strategies 1–2 |
+
+`--pool name=venue,venue` defines others; `--csv` writes per-match results. Group with `--by` (tier, div, season, month, market, snapshot, pool) and use `--by month` to spot data-source changes before trusting a number.
+
+What it can't tell you: depth, lifetime or fills (no sizes, two snapshots per match), lay prices, or Smarkets / Matchbook / Polymarket.
 
 ## Paper trading
 
