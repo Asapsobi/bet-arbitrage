@@ -11,6 +11,11 @@ def test_replay_then_gates(fixtures, tmp_path, capsys):
     main(['gates', '--db', db])
     out = capsys.readouterr().out
     assert 'G4 lifetime' in out and '18.0 / 20.0' in out    # only the +0.74% one clears the 0.5% bar
+    assert 'run arbscan paper first' in out
+    main(['paper', '--db', db])
+    assert '1 paper trades from 26 snapshots: 1 filled' in capsys.readouterr().out
+    main(['gates', '--db', db])
+    assert '100%; 0% of gross' in capsys.readouterr().out
     with pytest.raises(SystemExit):
         main(['replay', str(fixtures / 'synthetic_ou_demo.jsonl'), '--db', db])
     main(['replay', str(fixtures / 'synthetic_ou_demo.jsonl'), '--db', db, '--reset'])
