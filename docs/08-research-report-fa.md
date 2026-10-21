@@ -355,15 +355,18 @@ connectorها و منطق order book که برای market making ساخته‌ا
 
 ## اصلاحات نسبت به مستندات repo و محدودیت‌های این گزارش
 
-پنج مورد در مستندات فعلی [Asapsobi/bet-arbitrage](https://github.com/Asapsobi/bet-arbitrage) با منابع امروز تطبیق ندارد و باید به‌روز شود.
+موارد زیر در مستندات انگلیسی [Asapsobi/bet-arbitrage](https://github.com/Asapsobi/bet-arbitrage) با منابع امروز یا با همین گزارش تطبیق نداشت و اصلاح شد: پنج مورد اول در commit `316e437`، و سه مورد آخر در اصلاح بعدی برای هم‌خوانی با همین گزارش.
 
-| سند repo | ادعای فعلی | وضعیت امروز | منبع |
+| سند repo | ادعای قبلی | اصلاح‌شده به | منبع |
 | --- | --- | --- | --- |
 | 02-execution-venues | Betfair live key £299 | £499 یک‌باره | [Betfair support](https://support.developer.betfair.com/hc/en-us/articles/115003864651-How-do-I-get-started) |
 | 03-odds-data-feeds | Odds-API.io رایگان ۱۰۰ درخواست در ساعت | کلید رایگان جدید متوقف؛ ارزان‌ترین پلن £49 | [Odds-API.io](https://odds-api.io/) |
 | 03-odds-data-feeds | The Odds API «عمدتاً soft books» | Pinnacle، Betfair Ex، Matchbook، Smarkets، Polymarket و Kalshi را دارد | [The Odds API](https://the-odds-api.com/sports-odds-data/bookmaker-apis.html) |
 | 02-execution-venues | Polymarket: «spread / fees per market» | Sports taker fee = 0.05 × p × (1−p)؛ ایران مسدود؛ UK و US close-only | [Polymarket docs](https://docs.polymarket.com/trading/fees?via=xp) |
 | 02-execution-venues | Smarkets: دسترسی فقط با فرم | خواندن عمومی v3 بدون auth کار می‌کند؛ trading همچنان با تأیید | Measured |
+| README، 05-architecture | شروع با OddsPapi + pinnapi، Cloudbet و BetInAsia | The Odds API برای تشخیص و API خود exchangeها برای عمق؛ BetInAsia و Cloudbet فقط پس از تأیید (رتبه ۲ و ۳)؛ router فقط پس از go | همین گزارش |
+| 07-getting-started | آزمون live در هفته ۵ و ۶ با live key و واریز USDT | ۳۰ روز فقط‌خواندنی؛ پول واقعی فقط پس از عبور از هر شش gate، اول از همه G1 | همین گزارش |
+| 06-risks | آستانه palp «بالای ۵٪» | بالای ۳ تا ۵٪ یا فاصله زیاد از خط Pinnacle؛ scanner بالای ۳٪ را علامت می‌زند | همین گزارش |
 
 محدودیت‌های این گزارش:
 

@@ -1,6 +1,6 @@
 # Odds data feeds
 
-For football arbs, bookmaker breadth beats everything else: you need sharps, Asian books, crypto books and exchanges in one normalized schema. OddsPapi and Odds-API.io have the widest coverage; The Odds API is the cheapest feed that covers Pinnacle and the exchanges (Betfair, Matchbook, Smarkets) plus Polymarket and Kalshi.
+For football arbs, bookmaker breadth beats everything else: you need sharps, Asian books, crypto books and exchanges in one normalized schema. OddsPapi and Odds-API.io have the widest coverage; The Odds API is the cheapest feed that covers Pinnacle and the exchanges (Betfair, Matchbook, Smarkets) plus Polymarket and Kalshi, so the [report](08-research-report-fa.md) picks it for the first test. None of them show order-book depth; that comes from the exchanges' own APIs.
 
 | Provider | Books | Sharps / crypto / exchanges | Free tier | Paid from | Streaming |
 | --- | --- | --- | --- | --- | --- |

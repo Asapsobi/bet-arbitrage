@@ -2,10 +2,12 @@
 
 The product is a pipeline much like a market-making stack: normalized feeds in, a scanner, risk checks, and one router that owns every order.
 
+The 30-day test runs only the read-only half: feeds, normalizer, scanner and risk checks, writing to a log and the paper trader ([scanner](09-scanner.md)). The execution router, hedge loop and treasury are built only after a go on every gate ([getting started](07-getting-started.md)).
+
 ```mermaid
 flowchart TD
-    F1["Aggregated odds feed<br/><small>OddsPapi or Odds-API.io</small>"]
-    F2["Pinnacle reference line<br/><small>pinnapi feed</small>"]
+    F1["Aggregated odds feed<br/><small>The Odds API</small>"]
+    F2["Pinnacle reference line<br/><small>from the odds feed, or pinnapi</small>"]
     F3["Venue order books<br/><small>Betfair Stream, Polymarket WS</small>"]
 
     N["Normalizer<br/><small>map events and markets; odds net of commission</small>"]
