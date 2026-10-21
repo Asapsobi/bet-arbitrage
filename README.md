@@ -33,7 +33,8 @@ Crypto-funded venues: **Cloudbet, Stake, Pinnacle, BetInAsia, Polymarket**. Betf
 | 6 | [Risks and gotchas](docs/06-risks.md) | Limits, leg risk, voids, fees, counterparty, legal |
 | 7 | [Getting started](docs/07-getting-started.md) | 30-day read-only plan, go/no-go gates, what happens after a go, open questions |
 | 8 | [Research report (Persian)](docs/08-research-report-fa.md) | Measured arb frequency in 211k historical matches, a live net-of-fee check, venue/API database, ranking, capital, 30-day plan and go/no-go gates |
-| 9 | [Scanner](docs/09-scanner.md) | Read-only `arbscan` package: net-of-fee engine, arb lifetime and depth log, gate scoring |
+| 9 | [Scanner](docs/09-scanner.md) | Read-only `arbscan` package: net-of-fee engine, arb lifetime and depth log, paper trading, gate scoring, historical odds |
+| 10 | [Historical check](docs/10-historical-check.md) | Pinnacle vs Betfair Exchange in 2024/25 football-data odds: 48 arbs ≥ 0.5% net in a season, 0.15 a day against G2's 3 |
 | — | [Sources](docs/sources.md) | Pages the research is based on |
 
 Analysis code behind the report's measured figures is in [`analysis/`](analysis/): `arb_frequency.py` (historical frequency) and `live_example.py` (Bayern–Arsenal net-of-fee check); install its dependencies with `uv sync --extra analysis`. The scanner is in [`src/arbscan/`](src/arbscan/); see [docs/09](docs/09-scanner.md).
