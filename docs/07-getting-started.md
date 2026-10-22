@@ -1,5 +1,7 @@
 # Getting started
 
+> **Parked on 2026-10-22** ([decision memo](11-decision.md)). This plan applies only once gate G1 passes from a location where the venues are allowed.
+
 Run a read-only scanner for 30 days and let the go/no-go gates decide. No money goes in until all six gates pass, and failing the legal gate (G1) alone is a stop. This follows the 30-day plan in the [research report](08-research-report-fa.md); the [scanner](09-scanner.md) does the measuring.
 
 ## 30-day read-only plan
