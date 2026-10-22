@@ -4,6 +4,8 @@ Research and design notes for an automated football (soccer) betting-arbitrage p
 
 _As of 2026-10-21._
 
+> **Status, 2026-10-22: parked.** Real betting is a no-go from the operator's location (gate G1), and the historical check found about 0.15 qualifying arbs a day where at least 3 are needed (G2). See the [decision memo](docs/11-decision.md) for what would reopen it.
+
 ## TL;DR
 
 The buildable stack today is an aggregated odds feed for detection, plus three or four venues you can actually bet on by API. Soft bookmakers create the arbs but have no APIs and limit winners fast, so the product is built around venues that tolerate winners.
@@ -35,6 +37,7 @@ Crypto-funded venues: **Cloudbet, Stake, Pinnacle, BetInAsia, Polymarket**. Betf
 | 8 | [Research report (Persian)](docs/08-research-report-fa.md) | Measured arb frequency in 211k historical matches, a live net-of-fee check, venue/API database, ranking, capital, 30-day plan and go/no-go gates |
 | 9 | [Scanner](docs/09-scanner.md) | Read-only `arbscan` package: net-of-fee engine, arb lifetime and depth log, paper trading, gate scoring, historical odds |
 | 10 | [Historical check](docs/10-historical-check.md) | Pinnacle vs Betfair Exchange in 2024/25 football-data odds: 48 arbs ≥ 0.5% net in a season, 0.15 a day against G2's 3 |
+| 11 | [Decision memo](docs/11-decision.md) | Parked on 2026-10-22: why, each strategy's verdict, what we keep and what would reopen it |
 | — | [Sources](docs/sources.md) | Pages the research is based on |
 
 Analysis code behind the report's measured figures is in [`analysis/`](analysis/): `arb_frequency.py` (historical frequency) and `live_example.py` (Bayern–Arsenal net-of-fee check); install its dependencies with `uv sync --extra analysis`. The scanner is in [`src/arbscan/`](src/arbscan/); see [docs/09](docs/09-scanner.md).
