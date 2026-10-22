@@ -45,3 +45,14 @@ uv run arbscan fetch --seasons 2019-2025
 uv run arbscan history data/football-data --since 2024-07-01 --until 2025-06-30
 uv run arbscan history data/football-data --by month,snapshot --market 1x2 --pool 'pe=pinnacle,betfair_exchange'
 ```
+
+## Independent check
+
+`analysis/crosscheck_history.py` recounts this without any `arbscan` code and compares every match-market's return with `arbscan`'s per-match CSV:
+
+```bash
+uv run arbscan history data/football-data --since 2024-07-01 --until 2025-06-30 --csv data/h.csv
+python analysis/crosscheck_history.py data/football-data --since 2024-07-01 --until 2025-06-30 --arbscan-csv data/h.csv
+```
+
+On 2024/25 all 36,831 returns agree to 3×10⁻¹⁶, and on every season fetched (51,207) the same. Charging commission on each exchange leg instead of once per market gives 41 arbs instead of 48: 8 need two legs in one Betfair market to clear 0.5%, and 1 (Brest, March 2025) is pushed past the 3% palp cut.
