@@ -54,6 +54,8 @@ Each row prices a match at two moments: `pre` (collected Friday or Tuesday after
 
 What it can't tell you: depth, lifetime or fills (no sizes, two snapshots per match), lay prices, or Smarkets / Matchbook / Polymarket.
 
+`analysis/crosscheck_history.py` recounts the Pinnacle + exchange pool with no shared code and exits non-zero if any return differs; run it after changing the adapter or the solver. `tests/test_properties.py` settles thousands of random leg sets by hand and checks the solver and the engine against them.
+
 ## Paper trading
 
 When an arb is first seen, every leg goes out as a limit order at the detected price, sized to the smaller of `--cap` and the quoted fillable bankroll.

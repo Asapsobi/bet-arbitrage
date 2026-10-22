@@ -40,6 +40,6 @@ Crypto-funded venues: **Cloudbet, Stake, Pinnacle, BetInAsia, Polymarket**. Betf
 | 11 | [Decision memo](docs/11-decision.md) | Parked on 2026-10-22: why, each strategy's verdict, what we keep and what would reopen it |
 | — | [Sources](docs/sources.md) | Pages the research is based on |
 
-Analysis code behind the report's measured figures is in [`analysis/`](analysis/): `arb_frequency.py` (historical frequency) and `live_example.py` (Bayern–Arsenal net-of-fee check); install its dependencies with `uv sync --extra analysis`. The scanner is in [`src/arbscan/`](src/arbscan/); see [docs/09](docs/09-scanner.md).
+Analysis code behind the report's measured figures is in [`analysis/`](analysis/): `arb_frequency.py` (historical frequency), `live_example.py` (Bayern–Arsenal net-of-fee check) and `crosscheck_history.py` (an independent recount of `arbscan history`, sharing no code with it); install the first two's dependencies with `uv sync --extra analysis`. The scanner is in [`src/arbscan/`](src/arbscan/); see [docs/09](docs/09-scanner.md).
 
 > Pricing, API availability and venue policies change often. Re-check each venue's own docs before building on it.
